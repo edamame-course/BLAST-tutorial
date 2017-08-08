@@ -30,7 +30,7 @@ want to BLAST a lot of queries, or you might be interested in searching your own
 Today we'll automate batch searches at the command line on your own computer. This is a technique that works well for small-to-medium sized sequencing data sets. The various database (nr, nt) are getting big enough that it's reasonably time consuming to search them on your own, although of course you can do it if you want – you might just have to wait a while for things to finish.
 
 ## Motiviation: Why I want to run BLAST locally?
-[Here is the slide](https://github.com/edamame-course/2015-tutorials/blob/master/presentations_resources/BLAST.pdf)
+[Here are the slides](https://github.com/edamame-course/2015-tutorials/blob/master/presentations_resources/BLAST.pdf)
  
 1. BLAST on my own database
 2. Automation: run on server, downstream analysis, can be part of other program
