@@ -24,7 +24,10 @@ EDAMAME tutorials have a CC-BY [license](https://github.com/edamame-course/2015-
 # Introduction
 OK, your first introduction to the use and abuse of command line tools is... BLAST! That's right, the [Basic Local Alignment Search Tool](http://en.wikipedia.org/wiki/BLAST)!
 
-Let's assume that all of you have used the NCBI BLAST Web page to do individual searches. Today we'll automate batch searches at the command line on your own computer. This is a technique that works well for small-to-medium sized sequencing data sets. The various database (nr, nt) are getting big enough that it's reasonably time consuming to search them on your own, although of course you can do it if you want – you might just have to wait a while for things to finish.
+You can use the NCBI BLAST Web page to do individual searches. That's great when you're looking for just a few things. However, you might
+want to BLAST a lot of queries, or you might be interested in searching your own data using BLAST. 
+
+Today we'll automate batch searches at the command line on your own computer. This is a technique that works well for small-to-medium sized sequencing data sets. The various database (nr, nt) are getting big enough that it's reasonably time consuming to search them on your own, although of course you can do it if you want – you might just have to wait a while for things to finish.
 
 ## Motiviation: Why I want to run BLAST locally?
 [Here is the slide](https://github.com/edamame-course/2015-tutorials/blob/master/presentations_resources/BLAST.pdf)
@@ -33,7 +36,7 @@ Let's assume that all of you have used the NCBI BLAST Web page to do individual 
 2. Automation: run on server, downstream analysis, can be part of other program
 3. Speed
 
-Today, we are going to search representative-otus-database using my-gene-of-interest query.
+In this tutorial we'll search a representative-otus-database using my-gene-of-interest query.
 
 Before I forget, let me say that there are a lot of tips and tricks for working at the UNIX command line that I'm going to show you, so even if you've used command line BLAST before, you should skim along.
 
@@ -58,10 +61,15 @@ To install the BLAST software, type this:
 sudo apt-get install ncbi-blast+
 ```
 
+- `sudo` stands for "super user do". It's giving you the administrative privledges to install things.
+- `apt-get install` is how we install things on Ubuntu. Programmers package software so it can be installed this way, and a list of available packages is maintained.
+- `ncbi-blast+` is the name of the software we want to install
+
+
 ## Step 2: Download the databases
 Now, we can't run BLAST without downloading the databases. For this you'll need the DB such as nt.  This, like a lot of NCBI databases is huge, so I don't suggest putting this on your laptop unless you have a lot of room.  It's best on a larger computer (HPCC, Amazon machine, that you have access to).  I wouldn't install this database unless you know you have room on your computer. Let's download small database for this tutorial.
 
-Use curl to retrieve database and the file that we use today:
+Use curl to retrieve the database and file that we will use today:
 
 ```
 curl -O https://s3.amazonaws.com/edamame/Blast_Tutorial.tar.gz
@@ -85,15 +93,23 @@ Now you've got these files. How big are they?
 ls -l
 ```
 
-Let me tell you what are those files.
+We can also do 
 
-MyQuery.txt : This will be used for query
+```
+ls -lh
+```
 
-Refsoil16s.fa : You can use this for exercise as a database
+This shows us the file sizes in 'human readable' format.
 
-rep_set.fna : We well use this for database. This is the same file that we created from qiime tutorial.  
+What are each of these files?
 
-rep_set_sub.fna : You can use this for exercise as a query
+MyQuery.txt : This is a set of 16S sequences and will be used for a query
+
+Refsoil16s.fa : This is 16S data from soil
+
+rep_set.fna : This is a file of short 16S sequences that we will use as a reference database
+
+rep_set_sub.fna : These a few sequences from rep_set.fna that we will use for a query
 
 Database files are large files, but let's use something small for this tutorial.
 
@@ -105,7 +121,7 @@ makeblastdb -in rep_set.fna -dbtype nucl -out My16sAmplicon
 
 The -in parameter gives the name of the database, the -out parameter says "save the results", and the -dbtype parameter says "what type of the database". For DNA, you'd want to use '-dbtype nucl'. FYI, for protein, '-dbtype prot'.
 
-Let's see how BLAST database looks like
+Let's see how a BLAST database looks
 
 ```
 ls
@@ -115,7 +131,7 @@ You may notice that there are 3 files that were generated.
 
 My16sAmplicon.nhr, My16sAmplicon.nin, My16sAmplicon.nsq
 
-BLAST use this 3 files to make search efficiently.
+BLAST uses this 3 files to search efficiently.
 
 Just a reminder:
 
@@ -123,15 +139,15 @@ Just a reminder:
 2. UNIX utilities work well with text files, and almost everything you'll encounter is a basic text file. This is different from Windows and Mac, where more complicated formats are used that can't be as easily dealt with on UNIX.
 
 ## Step 3: Run BLAST
-Now try a BLAST: You need a file that have your query in. Here is your query looks like.
+Now try a BLAST: You need a file that have your query in. Here is what your query looks like.
 
 ```
-cat MyQuery.txt
+less MyQuery.txt
 ```
 
 We have 4 bacteria and 5 fungi.
 
-Now BLAST. We use blastn because we will search nucleotide database using a nucleotide query.
+Now BLAST. We use blastn because we will search a nucleotide database using a nucleotide query.
 
 ```
 blastn -db My16sAmplicon -query MyQuery.txt
@@ -167,7 +183,7 @@ blastn -db My16sAmplicon -query MyQuery.txt -out outtabular.txt -outfmt 6
 
 ## Excercise
 
-Let's try to search Reference Soil database using a your 16s amplicon query.
+Let's try to search the Reference Soil database using the 16S amplicon query, rep_set_sub.fna
 
 ### 1. Make Reference Soil database
 
