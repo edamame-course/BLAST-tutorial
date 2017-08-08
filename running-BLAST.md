@@ -121,6 +121,8 @@ makeblastdb -in rep_set.fna -dbtype nucl -out My16sAmplicon
 
 The -in parameter gives the name of the database, the -out parameter says "save the results", and the -dbtype parameter says "what type of the database". For DNA, you'd want to use '-dbtype nucl'. FYI, for protein, '-dbtype prot'.
 
+[makeblastdb manual](http://nebc.nerc.ac.uk/bioinformatics/documentation/blast+/user_manual.pdf)
+
 Let's see how a BLAST database looks
 
 ```
@@ -193,10 +195,15 @@ Hint: Here is the fasta format of reference soil. : RefSoil16s.fa
 
 Hint: You can use this sample query: rep_set_sub.fna
 
+
 ## Different BLAST options
 BLAST has lots and lots and lots of options. Run 'blastn' by itself to see what they are. Some of the most useful ones are `-evalue`.
 
-If you want to search protein, use 'blastp' instead of 'blastn'. 'blastx', 'tblastn', 'tblastx' also available.
+If you want to search protein, use 
+- 'blastp' - search protein databases using a protein query
+- 'blastx' - search protein databases using a translated nucleotide query
+- 'tblastn' - search translated nucleotide databases using a protein query
+- 'tblastx' - search translated nucleotide databases using a translated nucleotide query
 
 alignment view options:
 
@@ -223,6 +230,15 @@ alignment view options:
 10 = Comma-separated values
 
 11 = BLAST archive format (ASN.1)
+
+## Other BLAST uses
+
+In this tutorial we've used 16S sequences, but it's also very useful with shotgun metagenomic databases. You can take a gene, or set of genes, that you're interested in and BLAST the database to see if it's present and in what abundance. In these cases you would want to create a protein database and do a `tblastx` search.
+
+```
+makeblastdb -in metagenomic-data.fa -dbtype prot -out metagenomicDB
+tblastx -db metagenomicDB -query MyQuery.txt -out out.txt
+```
 
 ***
 ##Help and other resources
